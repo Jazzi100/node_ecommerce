@@ -51,12 +51,35 @@ const addProduct = async (req, res) => {
       quantity: req.body.quantity,
       productImage: req.file.path,
     });
-    product
-      .save()
-      .then(() => res.json({ message: "product added successfully" }));
+    product.save();
+    return res.status(200).json({
+      message: "Product added successfully",
+    });
   } catch (error) {
-    res.json({ message: error.toString() }).status(500);
+    return res.json({ message: error.toString() }).status(500);
   }
 };
 
-module.exports = { getAllProducts, activeProducts, singleProduct, addProduct };
+const deleteProduct = async (req, res) => {
+  const productId = req.params._id;
+  console.log("Delete request for product ID: " + productId);
+  try {
+    const result = await Product.findByIdAndRemove(productId);
+    if (!result) {
+      return res.status(404).json({ message: "Product not found" });
+    } else {
+      return res.status(200).json({ message: "Product delete successfully" });
+    }
+  } catch (error) {
+    console.log("Error caught while delete product: ", error);
+    return res.send(error.toString()).status(500);
+  }
+};
+
+module.exports = {
+  getAllProducts,
+  activeProducts,
+  singleProduct,
+  addProduct,
+  deleteProduct,
+};

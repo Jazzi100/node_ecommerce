@@ -70,21 +70,21 @@ const upload = multer({
   storage: Storage,
 });
 
-app.post("/add-product", upload.single("productImage"), async (req, res) => {
-  console.log(req, 36);
-  const product = new Product({
-    title: req.body.title,
-    description: req.body.description,
-    price: req.body.price,
-    category: req.body.category,
-    quantity: req.body.quantity,
-    productImage: req.file.originalname,
-  });
-  product
-    .save()
-    .then(() => res.json("product added"))
-    .catch((err) => res.status(400).json(`Error: ${err}`));
-});
+// app.post("/add-product", upload.single("productImage"), async (req, res) => {
+//   console.log(req, 36);
+//   const product = new Product({
+//     title: req.body.title,
+//     description: req.body.description,
+//     price: req.body.price,
+//     category: req.body.category,
+//     quantity: req.body.quantity,
+//     productImage: req.file.originalname,
+//   });
+//   product
+//     .save()
+//     .then(() => res.json("product added"))
+//     .catch((err) => res.status(400).json(`Error: ${err}`));
+// });
 
 // add product
 // app.post("/add-product", upload, async (request, response) => {
@@ -194,16 +194,16 @@ app.put("/product-status/:id", async (request, response) => {
 });
 
 // Delete Product
-app.delete("/delete/:_id", async (request, response) => {
-  console.log(request.params);
-  const result = await Product.deleteOne(request.params);
-  if (result.acknowledged) {
-    response.send({
-      message: "Product successfully deleted!",
-      status: 200,
-    });
-  }
-});
+// app.delete("/delete/:_id", async (request, response) => {
+//   console.log(request.params);
+//   const result = await Product.deleteOne(request.params);
+//   if (result.acknowledged) {
+//     response.send({
+//       message: "Product successfully deleted!",
+//       status: 200,
+//     });
+//   }
+// });
 
 /*---------------- CATEGORIES ROUTES ----------------*/
 

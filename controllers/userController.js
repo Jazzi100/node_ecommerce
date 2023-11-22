@@ -5,64 +5,31 @@ const jwt = require("jsonwebtoken");
 const createError = require("http-errors");
 
 // Login user
-
 const loginUser = async (req, res) => {
-  console.log("request : ", req.body);
-  const { email, password } = req.body;
-  let existingUser;
   try {
-    existingUser = await User.findOne({ email: email });
-  } catch (err) {
-    const error = new createError.HttpError(
-      500,
-      "Loging failed please try again.."
+    const { email, password } = req.body;
+    const existingUser = await User.findOne({ email: email });
+    if (!existingUser) throw "User doesnt exist";
+    const isValidPassword = await bcrypt.compare(
+      password,
+      existingUser.password
     );
-    return next(error);
-  }
-  if (!existingUser) {
-    //res.status(401).send({ message: "Invalid Credentials" });
-    const error = new createError.HttpError(401, "Invalid Credentials");
-    return next(error);
-  }
-  let isValidPassword = false;
-  try {
-    isValidPassword = await bcrypt.compare(password, existingUser.password);
-  } catch (err) {
-    // const error = new HttpError(
-    //   "could not loign, please check your credientials..",
-    //   500
-    // );
-    const error = new createError.HttpError(
-      500,
-      "could not loign, please check your credientials.."
-    );
-    return next(error);
-  }
-  if (!isValidPassword) {
-    // const error = new HttpError("Invalid credientials, could not login", 401);
-    // return next(error);
-    res.status(401).send({ message: "Invalid credientials, could not login" });
-  }
-  let token;
-  try {
-    token = jwt.sign(
+    if (!isValidPassword) throw "Invalid password";
+    const token = jwt.sign(
       { userId: existingUser._id, email: existingUser.email },
       "supersecret_dont_share",
       { expiresIn: "5h" }
     );
-  } catch (err) {
-    //const error = new HttpError("Logging failed please try again..", 500);
-    const error = new createError.HttpError(
-      500,
-      "Logging failed please try again.."
-    );
-    return next(error);
+
+    return res.status(200).json({
+      user: existingUser,
+      token: token,
+    });
+  } catch (error) {
+    console.error("Error caught while logging in: ", error);
+    // if(error === 'Invalid password') return res.status(401).json({ message: error })
+    res.status(500).json({ message: error });
   }
-  res.json({
-    user: existingUser,
-    token: token,
-  });
-  //res.json({ message: "login user" });
 };
 
 // Signup user
@@ -134,4 +101,9 @@ const signupUser = async (req, res) => {
   }
 };
 
-module.exports = { loginUser, signupUser };
+// Logout
+const logoutUser = async (req, res) => {
+  
+}
+
+module.exports = { loginUser, signupUser, logoutUser };

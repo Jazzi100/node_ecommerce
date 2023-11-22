@@ -22,6 +22,7 @@ const {
   activeProducts,
   singleProduct,
   addProduct,
+  deleteProduct,
 } = require("../controllers/productController");
 
 router.get("/get-all-products", getAllProducts);
@@ -31,5 +32,7 @@ router.get("/get-active-products", activeProducts);
 router.get("/:id", singleProduct);
 
 router.post("/add-product", upload.single("productImage"), addProduct);
+
+router.delete("/delete/:_id", deleteProduct);
 
 module.exports = router;
