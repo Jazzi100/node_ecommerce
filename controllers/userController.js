@@ -35,6 +35,8 @@ const loginUser = async (req, res) => {
 // Signup user
 const signupUser = async (req, res) => {
   try {
+
+    console.info('Req', req.body)
     if (!req.body.email || !req.body.password) {
       res.json({ message: "email and password fields must be filled...!" });
     }

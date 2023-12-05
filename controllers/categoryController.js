@@ -12,4 +12,14 @@ const getAllCategories = async (req, res) => {
   }
 };
 
-module.exports = { getAllCategories };
+const addCategory = async (req, res) => {
+  try {
+    console.log("add category function");
+  } catch (error) {
+ 
+    console.error("Error caught while Category get in: ", error);
+    res.status(500).json({ message: error });
+  }
+};
+
+module.exports = { getAllCategories, addCategory };
