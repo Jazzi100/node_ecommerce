@@ -8,7 +8,7 @@ var fs = require("fs");
 //get all products
 const getAllProducts = async (req, res) => {
   try {
-    let product = await Product.find().sort({ title: 1 });
+    let product = await Product.find().sort({ title: -1 }).populate('catagory_id');
     res.send(product);
   } catch (error) {
     console.log("Error caught while getting products: ", error);
@@ -42,12 +42,12 @@ const singleProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    console.info("REQ: ", req.body);
+    console.info("Product REQ : ", req.body);
     const product = new Product({
       title: req.body.title,
       description: req.body.description,
       price: req.body.price,
-      category: req.body.category,
+      catagory_id: req.body.category,
       quantity: req.body.quantity,
       productImage: req.file.path,
     });
@@ -76,10 +76,17 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+const adminAddProduct = async (req, res) => {
+  
+  console.log("Admin Add Product : ");
+  
+};
+
 module.exports = {
   getAllProducts,
   activeProducts,
   singleProduct,
   addProduct,
   deleteProduct,
+  adminAddProduct,
 };

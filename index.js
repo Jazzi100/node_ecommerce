@@ -50,7 +50,7 @@ app.get("/users", async (request, response) => {
       .status(200)
       .send({ users: users, message: "users found", success: true });
   } else {
-    response.status(500).send({ message: "Users not found", success: false });
+    response.status(500).send({ message: "Users not found", success: false }); 
   }
 });
 
@@ -147,7 +147,7 @@ app.put("/product/:id", async (request, response) => {
 
 //get all products
 app.get("/products", async (request, response) => {
-  let product = await Product.find().sort({ title: 1 });
+  let product = await Product.find().sort({ title: 1 }).populate('catagory_id');
   response.send(product);
 });
 
