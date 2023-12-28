@@ -9,7 +9,12 @@ var fs = require("fs");
 const getAllProducts = async (req, res) => {
   try {
     let product = await Product.find().sort({ title: -1 }).populate('catagory_id');
-    res.send(product);
+    if(req.session.existingUser){
+      res.send({product: product,valid: true});
+    }else{
+      res.send({valid: false});
+    }
+    
   } catch (error) {
     console.log("Error caught while getting products: ", error);
     res.send(error.toString()).status(500);
@@ -51,11 +56,14 @@ const addProduct = async (req, res) => {
       quantity: req.body.quantity,
       productImage: req.file.path,
     });
+    console.log("ggggggggggg"+product);
+
     product.save();
     return res.status(200).json({
       message: "Product added successfully",
     });
   } catch (error) {
+    console.error("Error adding product:", error);
     return res.json({ message: error.toString() }).status(500);
   }
 };

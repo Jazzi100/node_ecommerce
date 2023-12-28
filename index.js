@@ -5,21 +5,29 @@ const app = express();
 const { req, res } = require("express");
 const multer = require("multer");
 const path = require("path");
-const Product = require("./models/Product");
-
-const Category = require("./models/Categories");
 var fs = require("fs");
+
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+
+// import models
+const Product = require("./models/Product");
+const Category = require("./models/Categories");
+const User = require("./models/Users");
+
 
 // import routes files
 const userRoute = require("./routes/user");
 const productRoute = require("./routes/product");
 const categoryRoute = require("./routes/categoryRoute");
 const cartRoute = require("./routes/cartRoutes");
-// import routes files
 
+// import routes files
 const auth = require("./middleware/auth");
 
-const User = require("./models/Users");
+
+
 const destination = multer({
   dest: "public/",
 });
@@ -27,11 +35,24 @@ app.use(express.urlencoded({ extended: false })); // Parse URL-encoded bodies us
 app.use(express.json()); // Used to parse JSON bodies
 
 app.use(cors());
+app.use(cookieParser());
+app.use(session({
+  secret: 'supersecret_dont_share',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false,
+    maxAge: 1000 * 60 * 15
+  }
+}));
 app.use(express.static("./"));
+
 app.use((req, res, next) => {
   console.log("Req:", req.url);
   next();
 });
+
+
 
 /*---------------- USER ROUTES ----------------*/
 
@@ -70,55 +91,7 @@ const upload = multer({
   storage: Storage,
 });
 
-// app.post("/add-product", upload.single("productImage"), async (req, res) => {
-//   console.log(req, 36);
-//   const product = new Product({
-//     title: req.body.title,
-//     description: req.body.description,
-//     price: req.body.price,
-//     category: req.body.category,
-//     quantity: req.body.quantity,
-//     productImage: req.file.originalname,
-//   });
-//   product
-//     .save()
-//     .then(() => res.json("product added"))
-//     .catch((err) => res.status(400).json(`Error: ${err}`));
-// });
 
-// add product
-// app.post("/add-product", upload, async (request, response) => {
-//   console.log(request.body, request.file, 50);
-//   request.header("Access-Control-Allow-Origin", "*");
-//   request.header("Access-Control-Allow-Methods", "GET, PUT, POST");
-//   request.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-// data.append("title", title);
-// data.append("description", description);
-// data.append("price", price);
-// data.append("category", category);
-// data.append("quantity", quantity);
-// data.append("productImage", productImage);
-//   const payload = {
-//     title: request.body.title,
-//     description: request.body.description,
-//     price: request.body.price,
-//     catagory: request.body.category,
-//     quantity: request.body.quantity,
-//     status: request.body.status,
-//     image: request.file.path,
-//   };
-//   console.log(payload, 59);
-//   let product = new Product(payload);
-//   let result = await product.save();
-//   if (result) {
-//     response.send(result);
-//   } else {
-//     response.status(200).json({ message: "Product not added." });
-//   }
-// });
 
 //get product by id
 app.get("/product/:id", async (request, response) => {
@@ -146,9 +119,15 @@ app.put("/product/:id", async (request, response) => {
 });
 
 //get all products
-app.get("/products", async (request, response) => {
+app.get("/products", async (req, res) => {
   let product = await Product.find().sort({ title: 1 }).populate('catagory_id');
-  response.send(product);
+  // if(req.session.existingUser){
+  //   res.send({product: products,valid: true});
+  // }else{
+  //   res.send({valid: false});
+  // }
+  console.log("line no 129 index.js : " ,req.session.existingUser);
+  res.send(product);
 });
 
 //Add Product
@@ -216,4 +195,6 @@ app.put("/product-status/:id", async (request, response) => {
 
 // ----------------------------------------------
 
-app.listen(5000);
+app.listen(5000, ()=>{
+  console.log("Connected to the server");
+});
