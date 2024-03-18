@@ -26,7 +26,7 @@ const activeProducts = async (req, res) => {
   try {
     let product = await Product.find({
       status: 1,
-    });
+    }).populate("catagory_id");
     res.send(product);
   } catch (error) {
     console.log("Error caught while getting products: ", error);
@@ -56,7 +56,6 @@ const addProduct = async (req, res) => {
       quantity: req.body.quantity,
       productImage: req.file.path,
     });
-    console.log("ggggggggggg"+product);
 
     product.save();
     return res.status(200).json({
@@ -70,7 +69,6 @@ const addProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   const productId = req.params._id;
-  console.log("Delete request for product ID: " + productId);
   try {
     const result = await Product.findByIdAndRemove(productId);
     if (!result) {

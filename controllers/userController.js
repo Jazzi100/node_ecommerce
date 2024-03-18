@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const createError = require("http-errors");
-const { Session } = require("express-session");
+const session  = require("express-session");
 
 
 
@@ -26,8 +26,8 @@ const loginUser = async (req, res) => {
     );
     
     if(existingUser){
-        req.session.existingUser = existingUser;
-        console.log("Session mein save hoa wa User : ", req.session.existingUser);
+        req.session.userData = existingUser;
+        console.log("Session mein save hoa wa User : ", req.session.userData);
     }
     
     return res.status(200).json({

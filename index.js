@@ -126,7 +126,7 @@ app.get("/products", async (req, res) => {
   // }else{
   //   res.send({valid: false});
   // }
-  console.log("line no 129 index.js : " ,req.session.existingUser);
+  console.log("line no 129 index.js : " ,req.session.userData);
   res.send(product);
 });
 
