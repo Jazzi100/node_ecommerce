@@ -40,7 +40,9 @@ const addCart = async (req, res) => {
 const getCart = async (req, res) => {
   try {
     let cart = await Cart.find().populate("product_id");
-    res.send(cart);
+    // res.json({ data: cart});
+    // res.send(cart).status(200);
+    res.status(200).json({ cart: cart });
   } catch (error) {
     console.log("Error caught while getting products : ", error);
     res.send(error.toString()).status(500);

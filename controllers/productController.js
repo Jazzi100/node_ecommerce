@@ -8,16 +8,24 @@ var fs = require("fs");
 //get all products
 const getAllProducts = async (req, res) => {
   try {
-    let product = await Product.find().sort({ title: -1 }).populate('catagory_id');
-    if(req.session.existingUser){
-      res.send({product: product,valid: true});
-    }else{
-      res.send({valid: false});
-    }
+    const { categoryId, status } = req.query;
     
+    let query = {};
+
+    if (status) {
+      query.status = status;
+    }
+
+    if (categoryId) {
+      query.catagory_id = categoryId;
+    }
+
+    // Find products by the constructed query and populate the category
+    let products = await Product.find(query).populate('catagory_id');
+    res.status(200).json(products);
   } catch (error) {
-    console.log("Error caught while getting products: ", error);
-    res.send(error.toString()).status(500);
+    console.error('Error caught while getting products:', error);
+    res.status(500).json({ message: error.toString() });
   }
 };
 
@@ -37,7 +45,7 @@ const activeProducts = async (req, res) => {
 //get active products
 const singleProduct = async (req, res) => {
   try {
-    console.log("Req :", req.params.id);
+    console.log("Reqsss :", req.params.id);
     let product = await Product.findById(req.params.id);
     res.json({ product: product }).status(200);
   } catch (error) {
@@ -88,6 +96,31 @@ const adminAddProduct = async (req, res) => {
   
 };
 
+
+const allProduct = async (req, res) => {
+  try {
+    const { categoryId, status } = req.query;
+    
+    let query = {};
+
+    if (status) {
+      query.status = status;
+    }
+
+    if (categoryId) {
+      query.catagory_id = categoryId;
+    }
+
+    // Find products by the constructed query and populate the category
+    let products = await Product.find(query).populate('catagory_id');
+    res.status(200).json(products);
+  } catch (error) {
+    console.error('Error caught while getting products:', error);
+    res.status(500).json({ message: error.toString() });
+  }
+};
+
+
 module.exports = {
   getAllProducts,
   activeProducts,
@@ -95,4 +128,5 @@ module.exports = {
   addProduct,
   deleteProduct,
   adminAddProduct,
+  allProduct,
 };
