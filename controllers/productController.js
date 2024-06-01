@@ -32,9 +32,14 @@ const getAllProducts = async (req, res) => {
 //get active products
 const activeProducts = async (req, res) => {
   try {
-    let product = await Product.find({
-      status: 1,
-    }).populate("catagory_id");
+    const categoryId = req.query.categoryId 
+    const query = {};
+    if (categoryId == undefined || categoryId == null) res.json({message:'no category found. select valid category'}).status(404)
+    if(categoryId != 'All') query.catagory_id = categoryId;
+    query.status = 1;
+    console.log('Category ID:', query);
+    let product = await Product.find(query).populate("catagory_id");
+    console.log('Product: ', product)
     res.send(product);
   } catch (error) {
     console.log("Error caught while getting products: ", error);
