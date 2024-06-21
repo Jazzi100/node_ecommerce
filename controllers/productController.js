@@ -33,19 +33,25 @@ const getAllProducts = async (req, res) => {
 const activeProducts = async (req, res) => {
   try {
     const categoryId = req.query.categoryId 
+    const status = req.query.status
     const query = {};
-    if (categoryId == undefined || categoryId == null) res.json({message:'no category found. select valid category'}).status(404)
-    if(categoryId != 'All') query.catagory_id = categoryId;
-    query.status = 1;
-    console.log('Category ID:', query);
+    // if(categoryId) query.catagory_id = categoryId;
+    // if(status) query.status = status;
+    // if (categoryId == undefined || categoryId == null) return res.json({message:'no category found. select valid category'}).status(404)
+    if(  categoryId != null && categoryId != 'All') query.catagory_id = categoryId;
+    if(status) query.status = status;
+    console.log('Queryyyy :', query);
     let product = await Product.find(query).populate("catagory_id");
-    console.log('Product: ', product)
-    res.send(product);
+    
+    return res.send(product);
   } catch (error) {
     console.log("Error caught while getting products: ", error);
     res.send(error.toString()).status(500);
   }
 };
+
+
+
 
 //get active products
 const singleProduct = async (req, res) => {
@@ -96,22 +102,17 @@ const deleteProduct = async (req, res) => {
 };
 
 const adminAddProduct = async (req, res) => {
-  
   console.log("Admin Add Product : ");
-  
 };
 
 
 const allProduct = async (req, res) => {
   try {
     const { categoryId, status } = req.query;
-    
     let query = {};
-
     if (status) {
       query.status = status;
     }
-
     if (categoryId) {
       query.catagory_id = categoryId;
     }

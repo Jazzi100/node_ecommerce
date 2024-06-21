@@ -1,14 +1,24 @@
 const Category = require("../models/Categories");
 
 // Get active categories
+// const getAllCategories = async (req, res) => {
+//   try {
+//     let category = await Category.find().sort({ title: 1 });
+//     res.send(category).status(200);
+//   } catch (error) {
+ 
+//     console.error("Error caught while Category get in: ", error);
+//     res.status(500).json({ message: error });
+//   }
+// };
+
 const getAllCategories = async (req, res) => {
   try {
     let category = await Category.find().sort({ title: 1 });
-    res.send(category).status(200);
+    res.status(200).send(category);
   } catch (error) {
- 
     console.error("Error caught while Category get in: ", error);
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: error.message }); // Ensure the error message is sent properly
   }
 };
 
