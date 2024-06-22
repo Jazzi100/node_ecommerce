@@ -56,8 +56,8 @@ const activeProducts = async (req, res) => {
 //get active products
 const singleProduct = async (req, res) => {
   try {
-    console.log("Reqsss :", req.params.id);
-    let product = await Product.findById(req.params.id);
+    console.log("Reqsss :", req.query.id);
+    let product = await Product.findById(req.query.id);
     res.json({ product: product }).status(200);
   } catch (error) {
     res.json({ message: error.toString() }).status(500);

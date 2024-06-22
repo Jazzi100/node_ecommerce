@@ -30,7 +30,7 @@ router.get("/get-all-products", getAllProducts);
 
 router.get("/get-active-products", activeProducts);
 
-router.get("/single", singleProduct);
+router.get("/single-product", singleProduct);
 
 router.post("/add-product", upload.single("productImage"), addProduct);
 
