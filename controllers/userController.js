@@ -99,10 +99,16 @@ const signupUser = async (req, res) => {
         );
         return next(error);
       }
-      res.json({
-        userId: result._id,
-        email: result.email,
-        token: token,
+      // res.json({
+      //   userId: result._id,
+      //   email: result.email,
+      //   token: token,
+      // });
+      return res.status(200).json({
+        data: {
+          user: result,
+          token: token,
+        },
       });
     } else {
       res.json({ message: "something went wrong" });

@@ -23,6 +23,7 @@ const addCart = async (req, res) => {
         const cart = new Cart({
           product_id: req.body.p_id,
           quantity: req.body.qty,
+          user_id: req.body.user_id
         });
         cart.save().then(() => {
           res.json({ message: "cart added successfully" });
