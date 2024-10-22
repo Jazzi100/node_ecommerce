@@ -12,7 +12,8 @@ const addCart = async (req, res) => {
       try {
         let result = await Cart.updateOne(
           { product_id: req.body.p_id },
-          { $set: { quantity: req.body.qty } }
+          // { $set: { quantity: req.body.qty } }
+          { $inc: { quantity: req.body.qty } }
         );
         res.json({ message: "quantity updated successfully" });
       } catch (error) {
@@ -23,6 +24,7 @@ const addCart = async (req, res) => {
         const cart = new Cart({
           product_id: req.body.p_id,
           quantity: req.body.qty,
+          user_id: req.body.user_id
         });
         cart.save().then(() => {
           res.json({ message: "cart added successfully" });
@@ -38,8 +40,25 @@ const addCart = async (req, res) => {
 // ----- add to cart end -----
 
 const getCart = async (req, res) => {
+  console.log("Request : ", req);
   try {
-    let cart = await Cart.find().populate("product_id");
+    let filter = {};
+
+    if (req.query.user_id) {
+      filter.user_id = req.query.user_id;
+    }
+
+    if (req.query.product_id) {
+      filter._id = req.query.product_id; // Assuming product_id refers to the _id field in the Product model
+    }
+
+    if (req.query.status) {
+      filter.status = req.query.status;
+    }
+    console.log("Filter : " , filter);
+
+
+    let cart = await Cart.find(filter).populate("product_id");
     res.send(cart);
   } catch (error) {
     console.log("Error caught while getting products : ", error);
