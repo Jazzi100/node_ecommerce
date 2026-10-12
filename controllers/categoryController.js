@@ -1,47 +1,54 @@
-const Category = require("../models/Categories");
+const CategoryService = require('../services/CategoryService');
+const ResponseHandler = require('../utils/ResponseHandler');
 
-// Get active categories
+// =================== ADD CATEGORY ========================
+
 const getAllCategories = async (req, res) => {
   try {
-    let category = await Category.find().sort({ title: 1 });
-    res.send(category).status(200);
+    const categories = await CategoryService.getAllCategories();
+    return ResponseHandler.success(res, 'Categories fetched successfully', categories, 200);
   } catch (error) {
- 
-    console.error("Error caught while Category get in: ", error);
-    res.status(500).json({ message: error });
+    console.error('Error fetching categories:', error);
+    return ResponseHandler.error(
+      res, 
+      error.message || 'Internal Server Error', 
+      error.statusCode || 500, 
+      error.errorCode || 'SERVER_ERROR'
+    );
   }
 };
 
-// Add active categories
+// =================== ADD CATEGORY ========================
+
+const getMainCategories = async (req, res) => {
+  try {
+    console.log(req.query.status);
+    const { status } = req.query;
+    const categories = await CategoryService.getMainCategories(status);
+    return ResponseHandler.success(res, 'Parent categories fetched successfully', categories, 200);
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return ResponseHandler.error(res, error.message, error.statusCode, error.errorCode);
+  }
+};
+
+// =================== ADD CATEGORY ========================
 const addCategory = async (req, res) => {
   try {
-    const categoryName = await Category.findOne({ name: req.body.name });
-    if(categoryName){
-      return res.status(500).json({ message: 'This category is already exist', status: 500 });
-    }
-    const { name, parentId } = req.body;
-
-    let parentCategory = null;
-    
-    // Check if parentId is provided and exists
-    if (parentId) {
-      parentCategory = await Category.findById(parentId);
-      if (!parentCategory) {
-        return res.status(404).json({ message: 'Parent category not found' });
-      }
-    }
-
-    const newCategory = new Category({
-      name: name,
-      parent: parentCategory
+    //const savedCategory = await CategoryService.addCategory(req.body, req.file);
+    const savedCategory = await CategoryService.addCategory({
+      bodyData: req.body,
+      file: req.file
     });
-
-    const savedCategory = await newCategory.save();
-    res.status(200).json({ message: 'category created successfully', data : savedCategory , status : 200 });
+    return ResponseHandler.success(res, 'Category created successfully', savedCategory, 201);
   } catch (error) {
     console.error('Error adding category:', error);
-    res.status(500).json({ message: 'Internal Server Error' , status : 500});
+    return ResponseHandler.error(res, error.message, error.statusCode, error.errorCode);
   }
 };
 
-module.exports = { getAllCategories, addCategory };
+module.exports = {
+  getAllCategories,
+  addCategory,
+  getMainCategories
+};

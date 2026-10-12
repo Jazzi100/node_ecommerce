@@ -1,0 +1,69 @@
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+
+const createStorage = (folderName) => {
+
+  return multer.diskStorage({
+
+    destination: function (req, file, cb) {
+
+      const uploadPath = path.join(
+        process.cwd(),
+        "public",
+        "uploads",
+        folderName
+      );
+
+      // Create folder if it does not exist
+      fs.mkdirSync(uploadPath, {
+        recursive: true
+      });
+
+      console.log("Upload path:", uploadPath);
+
+      cb(null, uploadPath);
+    },
+
+    filename: function (req, file, cb) {
+      cb(null, file.originalname);
+    }
+
+  });
+};
+
+
+// ================= SINGLE FILE =================
+
+const uploadSingleFile = (folderName, attachmentName) => {
+
+  const storage = createStorage(folderName);
+
+  return multer({
+    storage: storage
+  }).single(attachmentName);
+
+};
+
+
+// ================= MULTIPLE FILES =================
+
+const uploadMultipleFiles = (
+  folderName,
+  attachmentName,
+  maxFiles = 10
+) => {
+
+  const storage = createStorage(folderName);
+
+  return multer({
+    storage: storage
+  }).array(attachmentName, maxFiles);
+
+};
+
+
+module.exports = {
+  uploadSingleFile,
+  uploadMultipleFiles
+};

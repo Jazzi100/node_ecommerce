@@ -16,4 +16,9 @@
 // });
 
 const mongoose = require("mongoose");
-mongoose.connect('mongodb://localhost:27017/ecommerce').then((value) => console.info('Connected to db successfully')).catch(e => console.warn('Error caught: ',e));
+
+mongoose.connect(
+    "mongodb://admin:password@localhost:27017/ecommerce?authSource=admin"
+)
+.then(() => console.info("Connected to db successfully"))
+.catch((e) => console.warn("Error caught: ", e));

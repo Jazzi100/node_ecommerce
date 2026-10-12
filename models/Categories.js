@@ -1,12 +1,5 @@
 const mongoose = require("mongoose");
 
-// const categorySchema = new mongoose.Schema({
-//   name: String,
-//   status: {
-//     type: Number,
-//     default: 1,
-//   },
-// });
 
 const categorySchema = new mongoose.Schema({
   name: String,
@@ -18,6 +11,10 @@ const categorySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "categories",
     default: null,
+  },
+  attachment: {
+    type: [String],
+    default: [],
   },
 });
 

@@ -31,7 +31,7 @@ router.get("/get-active-products", activeProducts);
 
 router.get("/:id", singleProduct);
 
-router.post("/add-product", upload.single("productImage"), addProduct);
+router.post("/add-product", upload.array("productImages"), addProduct);
 
 router.delete("/delete/:_id", deleteProduct);
 

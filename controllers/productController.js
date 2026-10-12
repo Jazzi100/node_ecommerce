@@ -47,14 +47,37 @@ const singleProduct = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
+
+
+    const images = req.files ? req.files.map(file => file.filename) : [];
+
+    
     console.info("Product REQ : ", req.body);
+    // this is the old save the product
+    // const product = new Product({
+    //   title: req.body.title,
+    //   description: req.body.description,
+    //   price: req.body.price,
+    //   catagory_id: req.body.category,
+    //   quantity: req.body.quantity,
+    //   productImage: req.file.path,
+    // });
+
+    console.info("Product Imagesss : ", images);
     const product = new Product({
-      title: req.body.title,
-      description: req.body.description,
-      price: req.body.price,
-      catagory_id: req.body.category,
-      quantity: req.body.quantity,
-      productImage: req.file.path,
+        title: req.body.title,
+        sku: req.body.sku,
+        catagory_id: req.body.catagory_id,
+        brand: req.body.brand,
+        description: req.body.description,
+        price: req.body.price,
+        discountPrice: req.body.discountPrice,
+        quantity: req.body.quantity,
+        lowQuantityAlert: req.body.lowQuantityAlert,
+        status: req.body.status,
+        tag: req.body.tag,
+        isFeatured: req.body.isFeatured,
+        productImages: images || null,
     });
 
     product.save();
