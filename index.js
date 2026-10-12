@@ -60,7 +60,7 @@ app.use("/api/user", userRoute);
 
 app.use("/api/product", productRoute);
 
-app.use("/api/category", categoryRoute);
+app.use("/api/category", auth, categoryRoute);
 
 app.use("/api/cart", cartRoute);
 
